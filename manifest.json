@@ -1,9 +1,10 @@
 {
   "manifest_version": 2,
 
-  "name": "Getting started example",
-  "description": "This extension shows a Google Image search result for the current page",
+  "name": "bookmarkManager",
+  "description": "This extension helps you to manage your bookmarks",
   "version": "1.0",
+  "author":"tanbowensg@gmail.com",
 
   "browser_action": {
     "default_icon": "icon.png",
@@ -14,17 +15,12 @@
     "activeTab",
     "storage",
     "webNavigation",
+    "bookmarks",
     "https://ajax.googleapis.com/"
   ],
 
-  // "content_scripts": [{
-  //     "matches": ["<all_urls>"],
-  //     "js": ["autorun.js"]
-  //   }],
   "background": {
     "page": "bg.html",
-    // "scripts": ["bg.js"],
-    // "persistent": false,
     "permissions": [
     "tabs",
     "activeTab",

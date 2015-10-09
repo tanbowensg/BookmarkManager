@@ -6,23 +6,7 @@
  -->
 <html>
   <head>
-    <title>Getting Started Extension's Popup</title>
-    <style>
-      body {
-        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
-        font-size: 100%;
-      }
-      #status {
-        /* avoid an excessively wide status text */
-        white-space: pre;
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
-      body{
-        width: 500px;
-      }
-    </style>
-
+    <title>BookmarksManager</title>
     <!--
       - JavaScript and HTML must be in separate files: see our Content Security
       - Policy documentation[1] for details and explanation.
@@ -31,10 +15,22 @@
      -->
     <script src="myapp.js"></script>
     <script src="popup.js"></script>
+    <link rel="stylesheet" href="css.css">
   </head>
   <body>
-    <div id="status"></div>
-    <img id="image-result" hidden>
+    <ul id="list">
+      <li id="title">
+        <span class="url">网址</span>
+        <span class="num">点击数</span>
+      </li>
+    </ul>
+    <div id="button-area">
+      <button id="update">更新到书签</button>
+      <button id="savebackup">保存备份</button>
+      <button id="restorebackup">恢复备份</button>
+      <button id="clear">清空记录</button>
+    </div>
+    <span>说明：本插件能够记录您所有打开过的网址，统计出您访问各个网站的次数，并且根据次数对书签重新排序。建议等到积累了一定量数据后再点击“更新到书签”，否则可能不能反映您真实的上网习惯</span>
   </body>
 </html>
 

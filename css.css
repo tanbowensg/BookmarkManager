@@ -1,0 +1,26 @@
+body {
+    font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+    font-size: 100%;
+    width: 300px;
+}
+
+#button-area {
+    width: 100%
+}
+
+ul#list {
+    list-style: none;
+    padding: 0px 20px 0px 20px;
+}
+
+#list li {
+    margin: 3px;
+}
+
+li#title {
+    font-weight: bold;
+}
+
+li span.num {
+    float: right;
+}
