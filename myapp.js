@@ -1,22 +1,22 @@
-var myapp = {}
+BookmarkManager = function() {}
 
-myapp.saveData = function() {
-    chrome.storage.local.set({
-        'data': myapp.data
-    })
+BookmarkManager.prototype.saveData = function(key) {
+    var obj = {}
+    obj[key] = this[key]
+    chrome.storage.local.set(obj)
 }
 
-myapp.loadData = function(callback) {
-    chrome.storage.local.get("data", function(result) {
-        myapp.data = result["data"]
-        console.log(myapp.data)
+BookmarkManager.prototype.loadData = function(key, callback) {
+    var that = this
+    chrome.storage.local.get(key, function(result) {
+        that[key] = result[key]
         if (callback) {
             callback()
         }
     })
 }
 
-myapp.getCurrentTabUrl = function(callback) {
+BookmarkManager.prototype.getCurrentTabUrl = function(callback) {
     // Query filter to be passed to chrome.tabs.query - see
     // https://developer.chrome.com/extensions/tabs#method-query
     var queryInfo = {
@@ -55,69 +55,28 @@ myapp.getCurrentTabUrl = function(callback) {
     // alert(url); // Shows "undefined", because chrome.tabs.query is alocal.
 }
 
-myapp.urlAnalysize = function(url) {
+BookmarkManager.prototype.urlAnalysize = function(url) {
     var domain = url.split("/")[2]
     return domain
 }
 
-myapp.domainExist = function(domain) {
-    var isExists = false
-    for (var i in myapp.data) {
-        if (myapp.data[i]["domain"] === domain) {
-            isExists = i
-            break
-        }
-    }
-    return isExists
-}
+BookmarkManager.prototype.addURL = function(domain, title) {
 
-myapp.addURL = function(domain, title) {
     var tempData = {
         domain: domain,
         title: title,
-        times: 1
+        times: 1,
+        ignore: false
     }
-    myapp.data.push(tempData)
+    this.data.push(tempData)
 }
 
-Array.prototype.shellSortBy = function(key) {
-    function less(a, b) {
-        if (a < b) {
-            return true
-        } else {
-            return false
-        }
-    }
-
-    function exch(a, i, j) {
-        var t = a[i]
-        a[i] = a[j]
-        a[j] = t
-    }
-    var l = this.length
-    var h = 128
-    while (h < l / 2) h = 2 * h + 1
-    while (h >= 1) {
-        for (var i = h; i < l; i++) {
-            for (var j = i; j >= h; j -= h) {
-                if (!less(this[j][key], this[j - h][key])) {
-                    exch(this, j, j - h)
-                } else {
-                    break
-                }
-            }
-        }
-        h = Math.floor(h / 2)
-    }
-    return this
-}
-
-myapp.clearData = function() {
-        myapp.data = []
+BookmarkManager.prototype.clearData = function() {
+        this.data = []
         chrome.storage.local.set({
             'data': []
         })
-        chrome.extension.getBackgroundPage().window.myapp.data = [] //background里的也要清除掉
+        chrome.extension.getBackgroundPage().window.this.data = [] //background里的也要清除掉
     }
     /**
      * [changeBookmarks description]
@@ -125,32 +84,27 @@ myapp.clearData = function() {
      * @return {[type]}    [description]
      */
 
-myapp.changeBookmarks = function(bm) {
-    var id
+BookmarkManager.prototype.changeBookmarks = function(bm) {
     var destination = {
         parentId: bm[0].parentId,
         index: 0
     }
     for (var i in bm) {
         destination.index = parseInt(i)
-        if (!(bm[i].id === undefined)) {
+        if (bm[i].id !== undefined && (!this.option.bmUpdateIgnore || !bm[i].ignore)) {
             chrome.bookmarks.move(bm[i].id, destination)
         }
     }
 }
 
-myapp.getBookmarks = function(callback) { //异步
+BookmarkManager.prototype.getBookmarks = function(callback) { //异步
+    var that = this
     chrome.bookmarks.getTree(function(tree) {
-        myapp.bookmarks = tree
+        that.bookmarks = tree
         if (callback) {
             callback(tree)
         }
     })
-}
-
-myapp.copyId = function(a, b) {
-    a.id = b.id
-    return b
 }
 
 /**
@@ -159,37 +113,55 @@ myapp.copyId = function(a, b) {
  * @param  {[array]} b [这是书签的数组]
  * @return {[type]}   [description]
  */
-myapp.updateBookmarks = function(r) {
+BookmarkManager.prototype.updateBookmarks = function(r) {
     var bm
-    myapp.getBookmarks(function(bmTree) { //getbookmarks是异步函数
+    var that = this
+    that.getBookmarks(function(bmTree) { //getbookmarks是异步函数
         bm = bmTree[0]['children'][0]['children']
-        bm = myapp.bookmarksUrlToDomain(bm)
-        bm = myapp.bookmarksAddTimes(bm, myapp.data)
+        bm = that.bookmarksUrlToDomain(bm)
+        bm = that.bookmarksAddTimes(bm, that.data)
+        bm = that.bookmarksAddIgnore(bm, that.data)
         bm.shellSortBy('times')
-        myapp.changeBookmarks(bm)
+        that.changeBookmarks(bm)
     })
 }
 
-myapp.bookmarksUrlToDomain = function(b) {
+// this.deleteIgnore=function(bm){
+//     for(var i in this.option.ignoreList){
+//         bm.deleteIgnore(this.option.ignoreList[i])
+//     }
+//     return bm
+// }
+
+BookmarkManager.prototype.bookmarksUrlToDomain = function(b) {
     for (var i in b) {
         // 有的可能是文件夹所以没有url所以要检测
         if (b[i].url) {
-            b[i].url = myapp.urlAnalysize(b[i].url)
+            b[i].url = this.urlAnalysize(b[i].url)
         }
     }
     return b
 }
 
-myapp.bookmarksAddTimes = function(b, r) {
+BookmarkManager.prototype.bookmarksAddTimes = function(b, r) {
     for (var i in b) {
-        var robj = myapp.getBykey("domain", b[i].url, r)
+        var robj = this.getBykey("domain", b[i].url, r)
         var theTimes = (robj === undefined ? 0 : robj.times)
         b[i].times = (theTimes === undefined ? 0 : theTimes)
     }
     return b
 }
 
-myapp.getBykey = function(key, val, obj) {
+BookmarkManager.prototype.bookmarksAddIgnore = function(b, r) {
+    for (var i in b) {
+        var robj = this.getBykey("domain", b[i].url, r)
+        var theIgnore = (robj === undefined ? false : robj.ignore)
+        b[i].ignore = (theIgnore === undefined ? false : theIgnore)
+    }
+    return b
+}
+
+BookmarkManager.prototype.getBykey = function(key, val, obj) {
     for (var i in obj) {
         if (obj[i][key] === val) {
             return obj[i]
@@ -197,26 +169,86 @@ myapp.getBykey = function(key, val, obj) {
     }
 }
 
-myapp.saveBackup = function() {
-    myapp.getBookmarks(function(tree) { //getbookmarks是异步函数
+BookmarkManager.prototype.saveBackup = function() {
+    this.getBookmarks(function(tree) { //getbookmarks是异步函数
         chrome.storage.local.set({
             'bmBackup': tree
         })
     })
 }
 
-myapp.restoreBackup = function() {
+BookmarkManager.prototype.restoreBackup = function() {
     var bm
+    var that = this
     chrome.storage.local.get('bmBackup', function(result) {
         bm = result['bmBackup'][0]['children'][0]['children']
-        bm = myapp.bookmarksUrlToDomain(bm)
-        bm = myapp.bookmarksAddTimes(bm, myapp.data)
-        myapp.changeBookmarks(bm)
+        bm = that.bookmarksUrlToDomain(bm)
+        bm = that.bookmarksAddTimes(bm, that.data)
+        that.changeBookmarks(bm)
     })
 }
 
-myapp.init = function() {
-    myapp.loadData()
+BookmarkManager.prototype.updateIgnoreList = function(url, ignore) {
+    for (var i in this.data) {
+        if (this.data[i].domain === url) {
+            this.data[i].ignore = ignore
+            break
+        }
+    }
+    //同步bg里的ignoreList
+    chrome.extension.getBackgroundPage().window.myapp.option.ignoreList = myapp.option.ignoreList
+    this.saveData('data')
+    this.saveData('option')
 }
 
-myapp.init()
+BookmarkManager.prototype.addToIgnore = function(url) {
+    if (!this.option.ignoreList.hasValue(url)) {
+        this.option.ignoreList.push(url)
+    }
+    this.updateIgnoreList(url, true)
+}
+
+BookmarkManager.prototype.removeFromIgnore = function(url) {
+    this.option.ignoreList.deleteByValue(url)
+    this.updateIgnoreList(url, false)
+}
+
+BookmarkManager.prototype.deleteRecord = function(domain) {
+    var index = this.hasDomain(domain)
+    if (index || index === 0) {
+        this.data.split(0, index)
+        this.saveData('data')
+    }
+}
+
+BookmarkManager.prototype.hasDomain = function(domain) {
+    for (var i in this.data) {
+        if (this.data[i]["domain"] === domain) {
+            return i
+        }
+    }
+    return false
+}
+
+BookmarkManager.prototype.init = function(callback) {
+    var that = this
+    that.loadData('data', function() {
+        if (that.data === undefined) {
+            that.data = []
+        }
+    })
+    that.loadData('option', function() {
+        if (that.option === undefined) {
+            that.option = {
+                bmUpdateIgnore: true,
+                ignoreList: []
+            }
+        }
+        if (callback) {
+            callback()
+            console.log(that.data)
+        }
+    })
+}
+
+myapp = new BookmarkManager()

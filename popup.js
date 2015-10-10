@@ -1,3 +1,5 @@
+myapp.init()
+
 document.addEventListener('DOMContentLoaded', function() {
 
     render()
@@ -22,27 +24,29 @@ document.addEventListener('DOMContentLoaded', function() {
         myapp.clearData()
         render()
     })
+
+
+    function render() {
+        myapp.loadData('data',function() {
+            myapp.data.shellSortBy('times')
+            var fragment = document.createDocumentFragment()
+            for (var i in myapp.data) {
+                if (myapp.data.hasOwnProperty(i)&&myapp.data[i].ignore!==true) {
+                    var li = document.createElement("li")
+                    var url = document.createElement("span")
+                    var num = document.createElement("span")
+                    li.className = 'row'
+                    url.className = 'url'
+                    num.className = 'num'
+                    url.innerHTML = myapp.data[i].domain
+                    num.innerHTML = myapp.data[i].times
+                    li.appendChild(url)
+                    li.appendChild(num)
+                    fragment.appendChild(li)
+                }
+            }
+            document.getElementById("list").appendChild(fragment)
+        })
+    }
 })
 
-function render() {
-    myapp.loadData(function() {
-        myapp.data.shellSortBy('times')
-        var fragment = document.createDocumentFragment()
-        for (var i in myapp.data) {
-            if (myapp.data.hasOwnProperty(i)) {
-                var li = document.createElement("li")
-                var url = document.createElement("span")
-                var num = document.createElement("span")
-                li.className = 'row'
-                url.className = 'url'
-                num.className = 'num'
-                url.innerHTML = myapp.data[i].domain
-                num.innerHTML = myapp.data[i].times
-                li.appendChild(url)
-                li.appendChild(num)
-                fragment.appendChild(li)
-            }
-        }
-        document.getElementById("list").appendChild(fragment)
-    })
-}

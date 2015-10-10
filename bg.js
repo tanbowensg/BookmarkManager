@@ -1,3 +1,5 @@
+myapp.init()
+
 chrome.webNavigation.onCompleted.addListener(function(details) {
     var url, title, domain, domainNum
         // 先判断frameId，只有当0的时候才是主窗口，其余的都是别的frame
@@ -14,7 +16,7 @@ chrome.webNavigation.onCompleted.addListener(function(details) {
         }
 
         domain = myapp.urlAnalysize(url)
-        domainNum = myapp.domainExist(domain)
+        domainNum = myapp.hasDomain(domain)
 
         if (domainNum || domainNum === 0) {
             myapp.data[domainNum]["times"]++
@@ -22,7 +24,7 @@ chrome.webNavigation.onCompleted.addListener(function(details) {
             myapp.addURL(domain)
         }
 
-        myapp.saveData()
+        myapp.saveData('data')
 
         console.log(domain)
         console.log(myapp.data[domainNum]["times"])
