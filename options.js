@@ -1,4 +1,3 @@
-$(function() {
 	var settings = {}
 
 	function makeIgnoreListRow(text) {
@@ -11,6 +10,31 @@ $(function() {
 		remove.click(settings.removeFromIgnoreList)
 
 		li.append(span).append(remove).appendTo($('#ignore-list-ul'))
+	}
+
+	settings.readHistory=function(callback){
+		chrome.history.search({
+			text:'',
+			startTime: new Date().getTime()-24*3600*1000*30,
+			endTime:new Date().getTime(),
+			maxResults:99999999,
+			},function (history){
+				settings.history=history
+				if(callback){
+					callback()
+				}
+			}
+		)
+	}
+
+	settings.updateByHistory=function(){
+		settings.readHistory(function(){
+			for (var i in settings.history){
+				url = myapp.urlAnalysize(settings.history[i].url)
+		        myapp.updateData(url)
+			}
+			myapp.saveData('data')
+		})
 	}
 
 	settings.renderIgnoreList = function() {
@@ -35,8 +59,8 @@ $(function() {
 	}
 
 	$("#ignore-list-add").click(settings.addToIgnoreList);
-
+	
+	myapp = new BookmarkManager()
 	myapp.init(function() {
 		settings.renderIgnoreList()
 	})
-})

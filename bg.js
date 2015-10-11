@@ -1,3 +1,4 @@
+myapp = new BookmarkManager()
 myapp.init()
 
 chrome.webNavigation.onCompleted.addListener(function(details) {
@@ -11,18 +12,7 @@ chrome.webNavigation.onCompleted.addListener(function(details) {
 
         url = details.url
 
-        if (url === "about:blank") {
-            return false
-        }
-
-        domain = myapp.urlAnalysize(url)
-        domainNum = myapp.hasDomain(domain)
-
-        if (domainNum || domainNum === 0) {
-            myapp.data[domainNum]["times"]++
-        } else {
-            myapp.addURL(domain)
-        }
+        myapp.updateData(url)
 
         myapp.saveData('data')
 

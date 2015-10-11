@@ -1,3 +1,4 @@
+myapp = new BookmarkManager()
 myapp.init()
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -25,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
         render()
     })
 
-
     function render() {
         myapp.loadData('data',function() {
             myapp.data.shellSortBy('times')
@@ -35,13 +35,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     var li = document.createElement("li")
                     var url = document.createElement("span")
                     var num = document.createElement("span")
+                    var remove=document.createElement("span")
                     li.className = 'row'
                     url.className = 'url'
                     num.className = 'num'
+                    remove.className = 'remove'
                     url.innerHTML = myapp.data[i].domain
                     num.innerHTML = myapp.data[i].times
+                    remove.innerHTML = "删除"
                     li.appendChild(url)
                     li.appendChild(num)
+                    li.appendChild(remove)
                     fragment.appendChild(li)
                 }
             }

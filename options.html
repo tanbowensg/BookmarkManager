@@ -14,10 +14,20 @@
       <h3>排除列表</h3>
       <ul id="ignore-list-ul">
       </ul>
-      <label for="igno
-      re-list-input">添加新的排除网站</label>
+      <label for="ignore-list-input">添加新的排除网站</label>
       <input type="text" id="ignore-list-input" placeholder="例:www.baidu.com">
       <button id="ignore-list-add">添加</button>
+    </section>
+    <section id="update-option-section">
+      <h3>更新选项</h3>
+      <div class="update-option-div">
+        <input type="checkbox" id="auto-add-checkbox">
+        <label for="auto-add-checkbox">点击数高于<input type="text" id="auto-add-input">，则自动添加该书签（如果该网站不在书签里的话）</label>
+      </div>
+      <div class="update-option-div">
+        <input type="checkbox" id="auto-delete-checkbox">
+        <label for="auto-delete-checkbox">点击数低于<input type="text" id="auto-delete-input">，则自动删除该书签</label>
+      </div>
     </section>
   </body>
 </html>

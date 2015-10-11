@@ -56,7 +56,16 @@ BookmarkManager.prototype.getCurrentTabUrl = function(callback) {
 }
 
 BookmarkManager.prototype.urlAnalysize = function(url) {
+    if(url===undefined){
+        console.log('有一个url是undefined')
+        return 'about:blank'
+    }
     var domain = url.split("/")[2]
+    if (domain===undefined) {
+        if(url.match("^.+\\.+")){//TODO:这个正则表达式还有问题，以后再再说
+            return url
+        }
+    }
     return domain
 }
 
@@ -222,12 +231,30 @@ BookmarkManager.prototype.deleteRecord = function(domain) {
 }
 
 BookmarkManager.prototype.hasDomain = function(domain) {
+    if(domain===undefined){
+        return false
+    }
     for (var i in this.data) {
         if (this.data[i]["domain"] === domain) {
             return i
         }
     }
     return false
+}
+
+BookmarkManager.prototype.updateData =function(url){
+    if (url === "about:blank") {
+        return false
+    }
+
+    domain = myapp.urlAnalysize(url)
+    domainNum = myapp.hasDomain(domain)
+
+    if (domainNum || domainNum === 0) {
+        myapp.data[domainNum]["times"]++
+    } else {
+        myapp.addURL(domain)
+    }
 }
 
 BookmarkManager.prototype.init = function(callback) {
@@ -250,5 +277,3 @@ BookmarkManager.prototype.init = function(callback) {
         }
     })
 }
-
-myapp = new BookmarkManager()
