@@ -1,34 +1,46 @@
 <!doctype html>
 <html>
-  <head>
-    <title>BookmarksManager-Options</title>
-    <meta charset="utf-8">
-    <script src="jquery.js"></script>
-    <script src="util.js"></script>
-    <script src="myapp.js"></script>
-    <script src="options.js"></script>
-    <link rel="stylesheet" href="options.css">
-  </head>
-  <body>
-    <section id="ignore-list-section">
-      <h3>排除列表</h3>
-      <ul id="ignore-list-ul">
-      </ul>
-      <label for="ignore-list-input">添加新的排除网站</label>
-      <input type="text" id="ignore-list-input" placeholder="例:www.baidu.com">
-      <button id="ignore-list-add">添加</button>
-    </section>
-    <section id="update-option-section">
-      <h3>更新选项</h3>
-      <div class="update-option-div">
-        <input type="checkbox" id="auto-add-checkbox">
-        <label for="auto-add-checkbox">点击数高于<input type="text" id="auto-add-input">，则自动添加该书签（如果该网站不在书签里的话）</label>
-      </div>
-      <div class="update-option-div">
-        <input type="checkbox" id="auto-delete-checkbox">
-        <label for="auto-delete-checkbox">点击数低于<input type="text" id="auto-delete-input">，则自动删除该书签</label>
-      </div>
-    </section>
-  </body>
+    <head>
+        <title>BookmarksManager-Options</title>
+        <meta charset="utf-8">
+        <script src="node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/myapp.js"></script>
+        <script src="js/options.js"></script>
+        <link rel="stylesheet" href="css/options.css">
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div class="container">
+            <ul class="nav nav-tabs" id="tab-nav">
+                <li><a href="#update-option-section" data-toggle="tab">Settings</a></li>
+                <li><a href="#ignore-list-section" data-toggle="tab">Exceptions</a></li>
+                <li><a href="" data-toggle="tab">Supports</a></li>
+                <li><a href="" data-toggle="tab"></a></li>
+            </ul>
+            <div class="tab-content">
+                <section class="tab-pane" id="ignore-list-section">
+                    <h3>排除列表</h3>
+                    <ul id="ignore-list-ul">
+                    </ul>
+                    <label for="ignore-list-input">添加新的排除网站</label>
+                    <input type="text" id="ignore-list-input" placeholder="例:www.baidu.com">
+                    <button id="ignore-list-add">添加</button>
+                </section>
+                <section class="tab-pane" id="update-option-section">
+                    <h3>更新选项</h3>
+                    <div class="update-option-div">
+                        <input type="checkbox" id="auto-add-checkbox">
+                        <label for="auto-add-checkbox">点击数高于<input type="text" id="auto-add-input">，则自动添加该书签（如果该网站不在书签里的话）</label>
+                    </div>
+                    <div class="update-option-div">
+                        <input type="checkbox" id="auto-delete-checkbox">
+                        <label for="auto-delete-checkbox">点击数低于<input type="text" id="auto-delete-input">，则自动删除该书签</label>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </body>
 </html>
 
