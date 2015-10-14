@@ -1,7 +1,7 @@
 {
   "name": "smartbookmark",
   "version": "1.3.0",
-  "description": "",
+  "description": "一个chrome插件",
   "main": "jquery.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/tanbowensg/BookmarkManager/issues"
   },
-  "homepage": "https://github.com/tanbowensg/BookmarkManager#readme"
+  "homepage": "https://github.com/tanbowensg/BookmarkManager#readme",
+  "devDependencies": {
+    "bootstrap": "^3.3.5",
+    "gulp": "^3.9.0",
+    "jquery": "^2.1.4"
+  }
 }

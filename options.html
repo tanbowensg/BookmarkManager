@@ -9,35 +9,35 @@
         <script src="js/myapp.js"></script>
         <script src="js/options.js"></script>
         <link rel="stylesheet" href="css/options.css">
-        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
     </head>
-    <body>
-        <div class="container">
+    <body id="body">
+        <div id="content">
             <ul class="nav nav-tabs" id="tab-nav">
-                <li><a href="#update-option-section" data-toggle="tab">Settings</a></li>
-                <li><a href="#ignore-list-section" data-toggle="tab">Exceptions</a></li>
-                <li><a href="" data-toggle="tab">Supports</a></li>
+                <li><a href="#update-option-section" data-toggle="tab">选项</a></li>
+                <li><a href="#ignore-list-section" data-toggle="tab">排除</a></li>
+                <li><a href="" data-toggle="tab">帮助</a></li>
                 <li><a href="" data-toggle="tab"></a></li>
             </ul>
             <div class="tab-content">
                 <section class="tab-pane" id="ignore-list-section">
                     <h3>排除列表</h3>
-                    <ul id="ignore-list-ul">
-                    </ul>
-                    <label for="ignore-list-input">添加新的排除网站</label>
                     <input type="text" id="ignore-list-input" placeholder="例:www.baidu.com">
                     <button id="ignore-list-add">添加</button>
+                    <ul id="ignore-list-ul">
+                    </ul>
                 </section>
                 <section class="tab-pane" id="update-option-section">
-                    <h3>更新选项</h3>
+                    <h3>选项</h3>
                     <div class="update-option-div">
                         <input type="checkbox" id="auto-add-checkbox">
-                        <label for="auto-add-checkbox">点击数高于<input type="text" id="auto-add-input">，则自动添加该书签（如果该网站不在书签里的话）</label>
+                        <label for="auto-add-checkbox">点击数排名高于<input type="text" id="auto-add-input">，则自动添加该书签（如果该网站不在书签里的话）</label>
                     </div>
                     <div class="update-option-div">
                         <input type="checkbox" id="auto-delete-checkbox">
-                        <label for="auto-delete-checkbox">点击数低于<input type="text" id="auto-delete-input">，则自动删除该书签</label>
+                        <label for="auto-delete-checkbox">点击数排名低于<input type="text" id="auto-delete-input">，则自动删除该书签</label>
                     </div>
+                    <button id="save-option-button">保存</button>
                 </section>
             </div>
         </div>

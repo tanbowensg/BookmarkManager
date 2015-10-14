@@ -1,4 +1,4 @@
-myapp = new BookmarkManager()
+myapp = new SmartBookmark()
 myapp.init()
 
 chrome.webNavigation.onCompleted.addListener(function(details) {

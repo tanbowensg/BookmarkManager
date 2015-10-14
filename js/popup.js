@@ -1,4 +1,4 @@
-myapp = new BookmarkManager()
+myapp = new SmartBookmark()
 myapp.init()
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var clearButton = document.getElementById("clear")
     clearButton.addEventListener("click", function() {
-        myapp.clearData()
+        myapp.clearData('data')
         render()
     })
 

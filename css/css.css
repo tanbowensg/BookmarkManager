@@ -24,3 +24,29 @@ li#title {
 li span.num {
     float: right;
 }
+
+::-webkit-scrollbar-thumb {
+    width: 8px;
+    min-height: 15px;
+    background: rgba(0,0,0,.3);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+    background: rgba(222,222,222,.5);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-track-piece {
+    background: #fff;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #fff;
+}
+
+::-webkit-scrollbar-button {
+    display: none;
+}
