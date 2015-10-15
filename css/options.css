@@ -5,8 +5,8 @@ body#body {
 }
 
 #content {
-    width: 750px;
-    height: 600px;
+    width:600px;
+    height: 700px;
     margin: 0px auto;
     padding: 20px;
     margin-top: 100px;
@@ -16,6 +16,16 @@ body#body {
     box-shadow: #ccc 1px 1px 10px;
     border-radius: 5px;
 }
+
+.update-option-div{
+    border-bottom: 1px #ccc solid;
+    padding-bottom: 20px
+}
+
+.update-option-indiv{
+    margin-left: 2em
+}
+
 ul#ignore-list-ul {
     list-style: none;
     border: 1px #ccc solid;
@@ -33,6 +43,11 @@ li.ignore-list-li:hover {
     cursor: pointer;
 }
 
+.num-input{
+    width: 2em;
+    text-align:center;
+}
+
 input#ignore-list-input {
     width: 400px;
 }
@@ -40,6 +55,10 @@ input#ignore-list-input {
 span.ignore-list-url {
     font-size: 16px;
     margin-left: 10px;
+}
+
+label{
+    font-weight: 600 !important
 }
 
 ::-webkit-scrollbar-thumb {

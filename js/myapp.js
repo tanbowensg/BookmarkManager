@@ -1,40 +1,43 @@
 SmartBookmark = function() {}
-/*-----------------------------操作storage相关的方法--------------------------------------*/
-/**
- * [saveData 把SmartBookmark[key]保存到storage中]
- * @param  {[String]} key [键名：如data,option]
- * @return {[null]}     [description]
- */
+    /*-----------------------------操作storage相关的方法--------------------------------------*/
+    /**
+     * [saveData 把SmartBookmark[key]保存到storage中]
+     * @param  {[String]} key [键名：如data,option]
+     * @return {[null]}     [description]
+     */
 SmartBookmark.prototype.saveData = function(key) {
-    var obj = {}
-    obj[key] = this[key]
-    chrome.storage.local.set(obj)
-}
-/**
- * [loadData 从storage中提取key,保存到SmartBookmark[key]]
- * @param  {[String]}   key      [如:data,option]
- * @param  {Function} callback [异步函数，所以要回调]
- * @return {[null]}            [description]
- */
+    var that=this
+        var obj = {}
+        obj[key] = this[key]
+        chrome.storage.local.set(obj,function(){
+            chrome.extension.getBackgroundPage().window.myapp[key] = that[key]
+        })
+    }
+    /**
+     * [loadData 从storage中提取key,保存到SmartBookmark[key]]
+     * @param  {[String]}   key      [如:data,option]
+     * @param  {Function} callback [异步函数，所以要回调]
+     * @return {[null]}            [description]
+     */
 SmartBookmark.prototype.loadData = function(key, callback) {
-    var that = this
-    chrome.storage.local.get(key, function(result) {
-        that[key] = result[key]
-        if (callback) {
-            callback()
-        }
-    })
-}
-/**
- * [clearData 清空SmartBookmark.key[key],storage[key],bg]
- * @return {[null]} [description]
- */
+        var that = this
+        chrome.storage.local.get(key, function(result) {
+            that[key] = result[key]
+            if (callback) {
+                callback()
+            }
+        })
+    }
+    /**
+     * [clearData 清空SmartBookmark.key[key],storage[key],bg]
+     * @return {[null]} [description]
+     */
 SmartBookmark.prototype.clearData = function(key) {
     this[key] = []
-    var obj={}
-    obj[key]=[]
+    var obj = {}
+    obj[key] = []
     chrome.storage.local.set(obj)
-        chrome.extension.getBackgroundPage().window.this.data = [] //background里的也要清除掉
+    chrome.extension.getBackgroundPage().window.myapp.data = [] //background里的也要清除掉
 }
 
 /*---------------------------End操作storage相关的方法End--------------------------------------*/
@@ -90,53 +93,53 @@ SmartBookmark.prototype.getCurrentTabUrl = function(callback) {
  * @param  {[type]} url [description]
  * @return {[type]}     [description]
  */
-SmartBookmark.prototype.updateData =function(url){
-    if (url === "about:blank") {
-        return false
-    }
+SmartBookmark.prototype.updateData = function(url) {
+        if (url === "about:blank") {
+            return false
+        }
 
-    domain = myapp.urlToDomain(url)
-    domainNum = myapp.hasDomain(domain)
+        domain = myapp.urlToDomain(url)
+        domainNum = myapp.hasDomain(domain)
 
-    if (domainNum || domainNum === 0) {
-        myapp.data[domainNum]["times"]++
-    } else {
-        myapp.addDomain(domain)
-    }
-}
-/**
- * [urlToDomain 把复杂的url变成纯域名]
- * @param  {[String]} url [url]
- * @return {[String]} domain [纯域名]
- */
-SmartBookmark.prototype.urlToDomain = function(url) {
-    if(url===undefined){
-        console.log('有一个url是undefined')
-        return 'about:blank'
-    }
-    var domain = url.split("/")[2]
-    if (domain===undefined) {
-        if(url.match("^.+\\.+")){//TODO:这个正则表达式还有问题，以后再再说
-            return url
+        if (domainNum || domainNum === 0) {
+            myapp.data[domainNum]["times"]++
+        } else {
+            myapp.addDomain(domain)
         }
     }
-    return domain
-}
-/**
- * [addDomain 根据domain新建一个对象，添加到SmartBookmark.data中]
- * @param {[String]} domain [domain]
- * @param {[String]} title  [title]
- */
-SmartBookmark.prototype.addDomain = function(domain, title) {
-    var tempData = {
-        domain: domain,
-        title: title,
-        times: 1,
-        ignore: false
+    /**
+     * [urlToDomain 把复杂的url变成纯域名]
+     * @param  {[String]} url [url]
+     * @return {[String]} domain [纯域名]
+     */
+SmartBookmark.prototype.urlToDomain = function(url) {
+        if (url === undefined) {
+            console.log('有一个url是undefined')
+            return 'about:blank'
+        }
+        var domain = url.split("/")[2]
+        if (domain === undefined) {
+            if (url.match("^.+\\.+")) { //TODO:这个正则表达式还有问题，以后再再说
+                return url
+            }
+        }
+        return domain
     }
-    this.data.push(tempData)
-}
-/*--------------------------End操作URL相关的方法End--------------------------------------*/
+    /**
+     * [addDomain 根据domain新建一个对象，添加到SmartBookmark.data中]
+     * @param {[String]} domain [domain]
+     * @param {[String]} title  [title]
+     */
+SmartBookmark.prototype.addDomain = function(domain, title) {
+        var tempData = {
+            domain: domain,
+            title: title,
+            times: 1,
+            ignore: false
+        }
+        this.data.push(tempData)
+    }
+    /*--------------------------End操作URL相关的方法End--------------------------------------*/
 
 /*--------------------------------更新书签模块的方法-----------------------------------------*/
 /**
@@ -162,22 +165,22 @@ SmartBookmark.prototype.updateBookmarks = function() {
  * @return {[type]}    [description]
  */
 SmartBookmark.prototype.changeBookmarks = function(bm) {
-    var destination = {
-        parentId: bm[0].parentId,
-        index: 0
-    }
-    for (var i in bm) {
-        destination.index = parseInt(i)
-        if (bm[i].id !== undefined && (!this.option.bmUpdateIgnore || !bm[i].ignore)) {//TODO：把ignore判断弄到别的地方去
-            chrome.bookmarks.move(bm[i].id, destination)
+        var destination = {
+            parentId: bm[0].parentId,
+            index: 0
+        }
+        for (var i in bm) {
+            destination.index = parseInt(i)
+            if (bm[i].id !== undefined && (!this.option.bmUpdateIgnore || !bm[i].ignore)) { //TODO：把ignore判断弄到别的地方去
+                chrome.bookmarks.move(bm[i].id, destination)
+            }
         }
     }
-}
-/**
- * [getBookmarks 获得当前的书签的bookmark对象]
- * @param  {Function} callback [异步，要回调]
- * @return {[null]}            [description]
- */
+    /**
+     * [getBookmarks 获得当前的书签的bookmark对象]
+     * @param  {Function} callback [异步，要回调]
+     * @return {[null]}            [description]
+     */
 SmartBookmark.prototype.getBookmarks = function(callback) { //异步
     var that = this
     chrome.bookmarks.getTree(function(tree) {
@@ -199,32 +202,32 @@ SmartBookmark.prototype.getBookmarks = function(callback) { //异步
  * @return {[Array]}    [description]
  */
 SmartBookmark.prototype.bmUrlToDomain = function(bm) {
-    for (var i in bm) {
-        // 有的可能是文件夹所以没有url所以要检测
-        if (bm[i].url) {
-            bm[i].url = this.urlToDomain(bm[i].url)//TODO：如果用了装饰模式那这个函数显然就不用了
+        for (var i in bm) {
+            // 有的可能是文件夹所以没有url所以要检测
+            if (bm[i].url) {
+                bm[i].url = this.urlToDomain(bm[i].url) //TODO：如果用了装饰模式那这个函数显然就不用了
+            }
         }
+        return bm
     }
-    return bm
-}
-/**
- * [bmAddTimes 根据data里的times给每个bm里的对应的书签添加times属性]
- * @param  {[Array]} bm [description]
- * @return {[Array]}    [description]
- */
+    /**
+     * [bmAddTimes 根据data里的times给每个bm里的对应的书签添加times属性]
+     * @param  {[Array]} bm [description]
+     * @return {[Array]}    [description]
+     */
 SmartBookmark.prototype.bmAddTimes = function(bm) {
-    for (var i in bm) {
-        var robj = this.getBykey("domain", bm[i].url, this.data)
-        var theTimes = (robj === undefined ? 0 : robj.times)
-        bm[i].times = (theTimes === undefined ? 0 : theTimes)
+        for (var i in bm) {
+            var robj = this.getBykey("domain", bm[i].url, this.data)
+            var theTimes = (robj === undefined ? 0 : robj.times)
+            bm[i].times = (theTimes === undefined ? 0 : theTimes)
+        }
+        return bm
     }
-    return bm
-}
-/**
- * [bmAddIgnore 给在ignorelist里的bm对象添加ignore=true的属性，而不是直接删除]
- * @param  {[Array]} bm [description]
- * @return {[Array]}   [description]
- */
+    /**
+     * [bmAddIgnore 给在ignorelist里的bm对象添加ignore=true的属性，而不是直接删除]
+     * @param  {[Array]} bm [description]
+     * @return {[Array]}   [description]
+     */
 SmartBookmark.prototype.bmAddIgnore = function(bm) {
     for (var i in bm) {
         var robj = this.getBykey("domain", bm[i].url, this.data)
@@ -240,8 +243,8 @@ SmartBookmark.prototype.bmAddIgnore = function(bm) {
  * @return {[Array]}    [description]
  */
 //TODO:这个函数未完成
-SmartBookmark.prototype.bmDeleteIgnore = function(bm){
-    for(var i in this.option.ignoreList){
+SmartBookmark.prototype.bmDeleteIgnore = function(bm) {
+    for (var i in this.option.ignoreList) {
         this.deleteIgnore(this.option.ignoreList[i])
     }
     return bm
@@ -267,52 +270,60 @@ SmartBookmark.prototype.getBykey = function(key, val, obj) {
 /*-------------------------------------备份的方法--------------------------------------------*/
 /**
  * [saveBackup 保存bm备份到storage.bmBackup]
+ * @param  {Function} callback [异步函数，所以要回调]
  */
-SmartBookmark.prototype.saveBackup = function() {
-    this.getBookmarks(function(tree) { //getbookmarks是异步函数
-        chrome.storage.local.set({
-            'bmBackup': tree
+SmartBookmark.prototype.saveBackup = function(callback) {
+        var that = this
+        that.getBookmarks(function(tree) { //getbookmarks是异步函数
+            var d = new Date()
+            tree[1] = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate()
+            chrome.storage.local.set({
+                'bmBackup': tree
+            })
+            that.bmBackup = tree
+            if (callback) {
+                callback()
+            }
         })
-    })
-}
-/**
- * [restoreBackup 根据storage.bmBackup恢复书签]
- */
-SmartBookmark.prototype.restoreBackup = function() {
-    var bm
-    var that = this
-    chrome.storage.local.get('bmBackup', function(result) {
-        bm = result['bmBackup'][0]['children'][0]['children']
-        bm = that.bookmarksUrlToDomain(bm)
-        bm = that.bookmarksAddTimes(bm, that.data)
-        that.changeBookmarks(bm)
-    })
-}
-/*----------------------------------end备份的方法end-----------------------------------------*/
-/*------------------------------------排除列表的方法-----------------------------------------*/
-/**
- * [addToIgnore 吧url加入猎表]
- * @param {[String]} url [description]
- */
-SmartBookmark.prototype.addToIgnore = function(url) {
-    if (!this.option.ignoreList.hasValue(url)) {
-        this.option.ignoreList.push(url)
     }
-    this.updateIgnoreList(url, true)
-}
-/**
- * [removeFromIgnore 吧url从列表中删除]
- * @param  {[String]} url [description]
- */
+    /**
+     * [restoreBackup 根据storage.bmBackup恢复书签]
+     */
+SmartBookmark.prototype.restoreBackup = function() {
+        var bm
+        var that = this
+        chrome.storage.local.get('bmBackup', function(result) {
+            bm = result['bmBackup'][0]['children'][0]['children']
+            bm = that.bmUrlToDomain(bm)
+            bm = that.bmAddTimes(bm, that.data)
+            that.changeBookmarks(bm)
+        })
+    }
+    /*----------------------------------end备份的方法end-----------------------------------------*/
+    /*------------------------------------排除列表的方法-----------------------------------------*/
+    /**
+     * [addToIgnore 吧url加入猎表]
+     * @param {[String]} url [description]
+     */
+SmartBookmark.prototype.addToIgnore = function(url) {
+        if (!this.option.ignoreList.hasValue(url)) {
+            this.option.ignoreList.push(url)
+        }
+        this.updateIgnoreList(url, true)
+    }
+    /**
+     * [removeFromIgnore 吧url从列表中删除]
+     * @param  {[String]} url [description]
+     */
 SmartBookmark.prototype.removeFromIgnore = function(url) {
-    this.option.ignoreList.deleteByValue(url)
-    this.updateIgnoreList(url, false)
-}
-/**
- * [updateIgnoreList 根据url和ignore，更新一个url到忽视列表，并同步到bg和storage，一般不单独调用]
- * @param  {[String]} url    [description]
- * @param  {[bool]} ignore [description]
- */
+        this.option.ignoreList.deleteByValue(url)
+        this.updateIgnoreList(url, false)
+    }
+    /**
+     * [updateIgnoreList 根据url和ignore，更新一个url到忽视列表，并同步到bg和storage，一般不单独调用]
+     * @param  {[String]} url    [description]
+     * @param  {[bool]} ignore [description]
+     */
 SmartBookmark.prototype.updateIgnoreList = function(url, ignore) {
     for (var i in this.data) {
         if (this.data[i].domain === url) {
@@ -326,19 +337,18 @@ SmartBookmark.prototype.updateIgnoreList = function(url, ignore) {
     this.saveData('option')
 }
 
-
 /*----------------------------------end排除列表的方法end-----------------------------------------*/
 
 SmartBookmark.prototype.deleteRecord = function(domain) {
     var index = this.hasDomain(domain)
     if (index || index === 0) {
-        this.data.split(0, index)
+        this.data.splice(0, index)
         this.saveData('data')
     }
 }
 
 SmartBookmark.prototype.hasDomain = function(domain) {
-    if(domain===undefined){
+    if (domain === undefined) {
         return false
     }
     for (var i in this.data) {
@@ -356,11 +366,18 @@ SmartBookmark.prototype.init = function(callback) {
             that.data = []
         }
     })
+    that.loadData('bmBackup', function() {
+        if (that.bmBackup === undefined) {
+            that.bmBackup = []
+            that.bmBackup[1] = "目前还没有备份"
+        }
+    })
     that.loadData('option', function() {
         if (that.option === undefined) {
             that.option = {
                 bmUpdateIgnore: true,
-                ignoreList: []
+                ignoreList: [],
+                displayLimit: 20
             }
         }
         if (callback) {

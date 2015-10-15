@@ -1,7 +1,7 @@
 body {
     font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
     font-size: 100%;
-    width: 300px;
+    width: 400px;
 }
 
 #button-area {
@@ -14,15 +14,51 @@ ul#list {
 }
 
 #list li {
+	display: flex;
     margin: 3px;
+}
+
+#list li:nth-child(2)
+{
+background:#ff0000;
 }
 
 li#title {
     font-weight: bold;
 }
+span {
+	font-size: 16px;
+}
+li span {
+    text-align: center
+}
+
+li span.rank {
+    width: 15%
+}
+
+li span.url {
+    width: 60%
+}
 
 li span.num {
-    float: right;
+    width: 15%
+}
+
+i.remove{
+	width: 10%;
+	font-size: 16px;
+	cursor:pointer;
+    padding-top: 4px;
+    text-align: center
+}
+
+li:hover{
+	color:red;
+}
+
+li#title:hover{
+	color:black;
 }
 
 ::-webkit-scrollbar-thumb {

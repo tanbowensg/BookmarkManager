@@ -1,8 +1,6 @@
-myapp = new SmartBookmark()
-myapp.init()
+document.addEventListener('DOMContentLoaded', renderAll)
 
-document.addEventListener('DOMContentLoaded', function() {
-
+function renderAll() {
     render()
 
     var updateButton = document.getElementById("update")
@@ -10,39 +8,42 @@ document.addEventListener('DOMContentLoaded', function() {
         myapp.updateBookmarks()
     })
 
-    var saveBackupButton = document.getElementById("savebackup")
-    saveBackupButton.addEventListener("click", function() {
-        myapp.saveBackup()
-    })
+    // var saveBackupButton = document.getElementById("savebackup")
+    // saveBackupButton.addEventListener("click", function() {
+    //     myapp.saveBackup()
+    // })
 
-    var restoreBackupButton = document.getElementById("restorebackup")
-    restoreBackupButton.addEventListener("click", function() {
-        myapp.restoreBackup()
-    })
+    // var restoreBackupButton = document.getElementById("restorebackup")
+    // restoreBackupButton.addEventListener("click", function() {
+    //     myapp.restoreBackup()
+    // })
 
-    var clearButton = document.getElementById("clear")
-    clearButton.addEventListener("click", function() {
-        myapp.clearData('data')
-        render()
-    })
+    // var clearButton = document.getElementById("clear")
+    // clearButton.addEventListener("click", function() {
+    //     myapp.clearData('data')
+    //     render()
+    // })
 
     function render() {
-        myapp.loadData('data',function() {
+        myapp.loadData('data', function() {
             myapp.data.shellSortBy('times')
             var fragment = document.createDocumentFragment()
-            for (var i in myapp.data) {
-                if (myapp.data.hasOwnProperty(i)&&myapp.data[i].ignore!==true) {
+            for (var i = 0; i < myapp.data.length && i <= myapp.option.displayLimit - 1; i++) {
+                if (myapp.data.hasOwnProperty(i) && myapp.data[i].ignore !== true) {
                     var li = document.createElement("li")
+                    var rank = document.createElement("span")
                     var url = document.createElement("span")
                     var num = document.createElement("span")
-                    var remove=document.createElement("span")
+                    var remove = document.createElement("i")
+                    rank.className = 'rank'
                     li.className = 'row'
                     url.className = 'url'
                     num.className = 'num'
-                    remove.className = 'remove'
+                    remove.className = 'remove glyphicon glyphicon-remove'
+                    rank.innerHTML = parseInt(i) + 1
                     url.innerHTML = myapp.data[i].domain
                     num.innerHTML = myapp.data[i].times
-                    remove.innerHTML = "删除"
+                    li.appendChild(rank)
                     li.appendChild(url)
                     li.appendChild(num)
                     li.appendChild(remove)
@@ -50,7 +51,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             document.getElementById("list").appendChild(fragment)
+
+            $(".remove").on("click", function() {
+                var domain = $(this).siblings('.url').text()
+                myapp.deleteRecord(domain)
+                $(this).parent().remove()
+                render()
+            })
         })
     }
-})
+}
 
+
+myapp = new SmartBookmark()
+myapp.init()

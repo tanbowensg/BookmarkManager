@@ -28,16 +28,53 @@
                     </ul>
                 </section>
                 <section class="tab-pane" id="update-option-section">
-                    <h3>选项</h3>
                     <div class="update-option-div">
-                        <input type="checkbox" id="auto-add-checkbox">
-                        <label for="auto-add-checkbox">点击数排名高于<input type="text" id="auto-add-input">，则自动添加该书签（如果该网站不在书签里的话）</label>
+                        <h3>显示设置</h3>
+                        <div class="update-option-indiv">
+                            <label for="display-limit-input">仅显示前<input type="text" id="display-limit-input" value="20" class="num-input">条排名记录</label>
+                            <button id="display-limit-save">保存</button>
+                        </div>
                     </div>
                     <div class="update-option-div">
-                        <input type="checkbox" id="auto-delete-checkbox">
-                        <label for="auto-delete-checkbox">点击数排名低于<input type="text" id="auto-delete-input">，则自动删除该书签</label>
+                        <h3>更新选项</h3>
+                        <div class="update-option-indiv">
+                            <div>
+                                <input type="checkbox" id="auto-add-checkbox">
+                                <label for="auto-add-checkbox">点击数排名高于<input type="text" id="auto-add-input" class="num-input">，则自动添加该书签（如果该网站不在书签里的话）</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="auto-delete-checkbox" >
+                                <label for="auto-delete-checkbox">点击数排名低于<input type="text" id="auto-delete-input" class="num-input">，则自动删除该书签</label>
+                            </div>
+                                <button id="save-option-button">保存</button>
+                        </div>
                     </div>
-                    <button id="save-option-button">保存</button>
+                    <div class="update-option-div">
+                        <h3>导入历史记录</h3>
+                        <div class="update-option-indiv">
+                            <label for="load-history-day">导入最近<input type="text" id="load-history-day" value="60" class="num-input">天内的历史记录</label>
+                            <button id="load-history-button">导入</button>
+                        </div>
+                    </div>
+                    <div class="update-option-div" id="backup-div">
+                        <h3>书签备份</h3>
+                        <div class="update-option-indiv">
+                            <div>
+                                <span>上次备份的时间：</span>
+                                <span id="last-backup-time"></span>
+                            </div>
+                            <div>
+                                <button id="save-backup-button">备份</button>
+                                <button id="restore-backup-button">还原</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="update-option-div">
+                        <h3>清空记录</h3>
+                        <div class="update-option-indiv">
+                            <button id="clear-all-button">清空所有记录</button>
+                        </div>
+                    </div>
                 </section>
             </div>
         </div>
