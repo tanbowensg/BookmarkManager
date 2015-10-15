@@ -1,40 +1,29 @@
 <!doctype html>
-<!--
- This page is shown when the extension button is clicked, because the
- "browser_action" field in manifest.json contains the "default_popup" key with
- value "popup.html".
- -->
 <html>
-  <head>
-    <title>BookmarksManager</title>
-    <meta charset="utf-8">
-    <!--
-      - JavaScript and HTML must be in separate files: see our Content Security
-      - Policy documentation[1] for details and explanation.
-      -
-      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
-     -->
-    <script src="node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="js/util.js"></script>
-    <script src="js/myapp.js"></script>
-    <script src="js/popup.js"></script>
-    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="css/css.css">
-  </head>
-  <body>
-    <ul id="list">
-      <li id="title">
-        <span class="rank">名次</span>
-        <span class="url">网址</span>
-        <span class="num">点击数</span>
-      </li>
-    </ul>
-    <div id="button-area">
-      <button id="update">更新到书签</button>
-      <button id="clear">清空记录</button>
-    </div>
-    <span>说明：本插件能够记录您所有打开过的网址，统计出您访问各个网站的次数，并且根据次数对书签重新排序。建议等到积累了一定量数据后再点击“更新到书签”，否则可能不能反映您真实的上网习惯</span>
-  </body>
+    <head>
+        <title>BookmarksManager</title>
+        <meta charset="utf-8">
+        <script src="node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/myapp.js"></script>
+        <script src="js/popup.js"></script>
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="css/css.css">
+    </head>
+    <body>
+        <h1 id="SmartBookmark">SmartBookmark</h1>
+        <ul id="list">
+            <li id="title">
+                <span class="rank">名次</span>
+                <span class="url">网址</span>
+                <span class="num">点击数</span>
+            </li>
+        </ul>
+        <div id="button-area">
+            <button id="update">同步书签</button>
+            <button id="option">选项</button>
+        </div>
+    </body>
 </html>
 

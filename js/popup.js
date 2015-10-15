@@ -55,7 +55,8 @@ function renderAll() {
             $(".remove").on("click", function() {
                 var domain = $(this).siblings('.url').text()
                 myapp.deleteRecord(domain)
-                $(this).parent().remove()
+                $(this).parent().hide(300)
+                $(".row").remove()
                 render()
             })
         })
@@ -64,4 +65,8 @@ function renderAll() {
 
 
 myapp = new SmartBookmark()
-myapp.init()
+myapp.init(function(){
+    $("#option").click(function(){
+        chrome.tabs.create({ url: "options.html" });
+    })
+})

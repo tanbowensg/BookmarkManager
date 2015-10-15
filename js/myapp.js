@@ -6,10 +6,10 @@ SmartBookmark = function() {}
      * @return {[null]}     [description]
      */
 SmartBookmark.prototype.saveData = function(key) {
-    var that=this
+        var that = this
         var obj = {}
         obj[key] = this[key]
-        chrome.storage.local.set(obj,function(){
+        chrome.storage.local.set(obj, function() {
             chrome.extension.getBackgroundPage().window.myapp[key] = that[key]
         })
     }
@@ -342,7 +342,7 @@ SmartBookmark.prototype.updateIgnoreList = function(url, ignore) {
 SmartBookmark.prototype.deleteRecord = function(domain) {
     var index = this.hasDomain(domain)
     if (index || index === 0) {
-        this.data.splice(0, index)
+        this.data.splice(index, 1)
         this.saveData('data')
     }
 }

@@ -1,0 +1,34 @@
+ 业务逻辑
+
+ 1、从历史记录取得
+ 2、获得data
+
+//bg模块，获得tab的url，添加到data中----------
+ 1、从tab处获得URL
+ 2、先分析URL，转换成domain
+ 3、检测data中是否已有domain，即updateData
+ 	yes：data.domain++
+ 	no:new domain -> data
+ 4、savedata
+
+//更新书签模块,主函数updatebookmarks，主键是domain
+ 1、获得data
+ 2、获得当前所有的bookmark
+ 3、将bookmark里所有的url变成domain
+ 4、根据data中的domain，将bookmark里相同的domain提取出来，为新的bookmark
+ 5、根据ignorelist，将忽视的bookmark删除掉
+ 6、根据data，将对应的times添加到bookmark中
+ 7、根据times将bookmark排序
+ 8、changeBookmark，需要一个有序数组，其中只包括需要重新排序的书签
+ 	[{
+ 		url:string
+ 		ignore:bool
+ 		parentID:int
+ 	}]
+
+
+ 	data=[{
+		domain: "www.google.com"
+		ignore: false
+		times: 1
+ 	}]
