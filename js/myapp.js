@@ -155,7 +155,7 @@ SmartBookmark.prototype.updateBookmarks = function() {
         bm = bmTree[0]['children'][0]['children']
         bm = that.bmUrlToDomain(bm)
         bm = that.bmAddTimes(bm)
-        bm = that.bmAddIgnore(bm)
+        // bm = that.bmAddIgnore(bm)
         bm.shellSortBy('times')
         that.changeBookmarks(bm)
     })
@@ -200,26 +200,52 @@ SmartBookmark.prototype.changeBookmarks = function(bm) {
     }
 
     for (var i=0;i<bm.length;i++) {
+    // for (var i=bm.length;i>0;i--) {
 
-        if (bm[i].id !== undefined &&bm[i].domain!==undefined) { 
-            destination={
-                index : count,
-                parentId: bm[i].parentId,
+        if(myapp.option.autoDelete.enable===true){//自动删除点击少的书签
+            if(bm[i].times<myapp.option.autoDelete.limit && bm[i].id !== undefined){
+                myapp.removeBookmark(bm[i].id)
+                console.log(bm[i].title)
+                continue
             }
-            chrome.bookmarks.move(bm[i].id, destination)
-            count++
         }
-        else if(bm[i].id===undefined){//自动添加新书签
-            destination={
-                index : count,
-                parentId:"1",
-                title:bm[i].title,
-                url:"http://"+bm[i].domain//这里必须加上http，否则会报错Invalid　URL
+
+        if(myapp.option.autoAdd.enable===true){//自动添加新书签
+            if(i<myapp.option.autoAdd.limit && bm[i].id === undefined){
+                myapp.createBookmark(count,'1',bm[i].title,bm[i].domain)
+                count++
+                continue
             }
-            chrome.bookmarks.create(destination)
+        }
+
+        if (bm[i].id !== undefined && bm[i].domain!==undefined) { //正常移动书签
+            myapp.moveBookmark(bm[i].id,count,bm[i].parentId)
             count++
+            continue
         }
     }
+}
+
+SmartBookmark.prototype.removeBookmark=function(id) {
+    chrome.bookmarks.remove(id)
+}
+
+SmartBookmark.prototype.moveBookmark=function(id,index,parentId) {
+    var destination={
+        index : index,
+        parentId:parentId
+    }
+    chrome.bookmarks.move(id, destination)
+}
+
+SmartBookmark.prototype.createBookmark=function(index,parentId,title,url) {
+    var destination={
+        index : index,
+        parentId:parentId,
+        title:title,//TODO：这里title经常会错误，或许要弄个列表处理title
+        url:"http://"+url//这里必须加上http，否则会报错Invalid　URL
+    }
+    chrome.bookmarks.create(destination)
 }
 
 /**
@@ -341,6 +367,7 @@ SmartBookmark.prototype.saveBackup = function(callback) {
     /**
      * [restoreBackup 根据storage.bmBackup恢复书签]
      */
+    //TODO:这个恢复备份不能恢复新增加的或者被删除的书签
 SmartBookmark.prototype.restoreBackup = function() {
         var bm
         var that = this
