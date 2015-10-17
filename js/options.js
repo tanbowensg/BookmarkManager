@@ -34,8 +34,7 @@ settings.updateByHistory = function(day) {
     myapp.clearData('data')
     settings.readHistory(day, function() {
         for (var i in settings.history) {
-            url = myapp.urlToDomain(settings.history[i].url)
-            myapp.updateData(url)
+            myapp.updateData(settings.history[i].url,settings.history[i].title)
         }
         myapp.saveData('data')
     })

@@ -5,7 +5,7 @@ function renderAll() {
 
     var updateButton = document.getElementById("update")
     updateButton.addEventListener("click", function() {
-        myapp.updateBookmarks()
+        myapp.updateBookmarksByData()
     })
 
     // var saveBackupButton = document.getElementById("savebackup")

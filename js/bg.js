@@ -8,10 +8,13 @@ chrome.webNavigation.onCompleted.addListener(function(details) {
         // })
 
         url = details.url
+        chrome.tabs.get(details.tabId, function(tab) {
+            title = tab.title
+            
+            myapp.updateData(url, title)
 
-        myapp.updateData(url)
-
-        myapp.saveData('data')
+            myapp.saveData('data')
+        })
     }
 })
 

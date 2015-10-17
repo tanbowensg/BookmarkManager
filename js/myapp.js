@@ -93,7 +93,7 @@ SmartBookmark.prototype.getCurrentTabUrl = function(callback) {
  * @param  {[type]} url [description]
  * @return {[type]}     [description]
  */
-SmartBookmark.prototype.updateData = function(url) {
+SmartBookmark.prototype.updateData = function(url,title) {
         if (url === "about:blank") {
             return false
         }
@@ -103,8 +103,9 @@ SmartBookmark.prototype.updateData = function(url) {
 
         if (domainNum || domainNum === 0) {
             myapp.data[domainNum]["times"]++
+            myapp.data[domainNum].titleArray.push(title)
         } else {
-            myapp.addDomain(domain)
+            myapp.addDomain(domain,title)
         }
     }
     /**
@@ -135,7 +136,8 @@ SmartBookmark.prototype.addDomain = function(domain, title) {
             domain: domain,
             title: title,
             times: 1,
-            ignore: false
+            ignore: false,
+            titleArray:[]
         }
         this.data.push(tempData)
     }
@@ -159,28 +161,61 @@ SmartBookmark.prototype.updateBookmarks = function() {
     })
 }
 
+SmartBookmark.prototype.updateBookmarksByData = function() {
+    var bm
+    var that = this
+    that.getBookmarks(function(bmTree) { //getbookmarks是异步函数
+        bm = bmTree[0]['children'][0]['children']
+        bm = that.bmUrlToDomain(bm)
+        for(var i in myapp.data){
+            var index=that.getBykey("domain",myapp.data[i].domain,bm)
+            if (index){
+                myapp.data[i].parentId=index.parentId
+                myapp.data[i].id=index.id
+                myapp.data[i].title=index.title
+            }
+        }
+        myapp.data.shellSortBy('times')
+        that.changeBookmarks(myapp.data)
+    })
+}
+
 /**
  * [changeBookmarks description]
- * @param  {[type]} bm [已经排序好的bookmarks数组,其中只包括需要重新排序的书签]
+ * @param  {[type]} bm [已经排序好的bookmarks数组,其中只包括需要重新排序的书签，
+ * 书签对象还必须有id和parentid]
  * @return {[type]}    [description]
  */
 SmartBookmark.prototype.changeBookmarks = function(bm) {
-        var destination = {
-            parentId: bm[0].parentId,
-            index: 0
-        }
-        for (var i in bm) {
-            destination.index = parseInt(i)
-            if (bm[i].id !== undefined && (!this.option.bmUpdateIgnore || !bm[i].ignore)) { //TODO：把ignore判断弄到别的地方去
-                chrome.bookmarks.move(bm[i].id, destination)
+    var destination 
+    var count=0
+    for (var i=0;i<bm.length;i++) {
+
+        if (bm[i].id !== undefined &&bm[i].domain!==undefined&& (!this.option.bmUpdateIgnore || !bm[i].ignore)) { //TODO：把ignore判断弄到别的地方去
+            count++
+            destination={
+                index : count,
+                parentId: bm[i].parentId,
             }
+            chrome.bookmarks.move(bm[i].id, destination)
+        }
+        else if(bm[i].id===undefined){//自动添加新书签
+            count++
+            chrome.bookmarks.create({
+                index : count,
+                parentId:"1",
+                title:bm[i].title,
+                url:"http://"+bm[i].domain//这里必须加上http，否则会报错Invalid　URL
+            })
         }
     }
-    /**
-     * [getBookmarks 获得当前的书签的bookmark对象]
-     * @param  {Function} callback [异步，要回调]
-     * @return {[null]}            [description]
-     */
+}
+
+/**
+ * [getBookmarks 获得当前的书签的bookmark对象]
+ * @param  {Function} callback [异步，要回调]
+ * @return {[null]}            [description]
+ */
 SmartBookmark.prototype.getBookmarks = function(callback) { //异步
     var that = this
     chrome.bookmarks.getTree(function(tree) {
@@ -205,7 +240,7 @@ SmartBookmark.prototype.bmUrlToDomain = function(bm) {
         for (var i in bm) {
             // 有的可能是文件夹所以没有url所以要检测
             if (bm[i].url) {
-                bm[i].url = this.urlToDomain(bm[i].url) //TODO：如果用了装饰模式那这个函数显然就不用了
+                bm[i].domain = this.urlToDomain(bm[i].url) //TODO：如果用了装饰模式那这个函数显然就不用了
             }
         }
         return bm
@@ -217,7 +252,7 @@ SmartBookmark.prototype.bmUrlToDomain = function(bm) {
      */
 SmartBookmark.prototype.bmAddTimes = function(bm) {
         for (var i in bm) {
-            var robj = this.getBykey("domain", bm[i].url, this.data)
+            var robj = this.getBykey("domain", bm[i].domain, this.data)
             var theTimes = (robj === undefined ? 0 : robj.times)
             bm[i].times = (theTimes === undefined ? 0 : theTimes)
         }
@@ -230,7 +265,7 @@ SmartBookmark.prototype.bmAddTimes = function(bm) {
      */
 SmartBookmark.prototype.bmAddIgnore = function(bm) {
     for (var i in bm) {
-        var robj = this.getBykey("domain", bm[i].url, this.data)
+        var robj = this.getBykey("domain", bm[i].domain, this.data)
         var theIgnore = (robj === undefined ? false : robj.ignore)
         bm[i].ignore = (theIgnore === undefined ? false : theIgnore)
     }
@@ -265,6 +300,7 @@ SmartBookmark.prototype.getBykey = function(key, val, obj) {
             return obj[i]
         }
     }
+    return false
 }
 
 /*-------------------------------------备份的方法--------------------------------------------*/

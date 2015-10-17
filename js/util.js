@@ -47,3 +47,40 @@ Array.prototype.hasValue=function(val){
     }
     return false
 }
+
+Array.prototype.getObjHasKey=function(key){
+    for (var i in this){
+        if(this[i].hasOwnProperty(key)){
+            return i
+        }
+    }
+    return false
+}
+/**
+ * [getFrequency 在一个数组中获得出现频率最高的值]
+ * @return {[type]} [description]
+ */
+Array.prototype.getFrequency=function(){
+    this.sort()
+    var count=0
+    var max={
+        val:0,
+        num:0
+    }
+    for (var i =1;i<this.length;i++){
+        if(this[i]===""){
+            continue
+        }
+        if(this[i]===this[i-1]){
+            count++
+            if(max.num<count){
+                max.num=count
+                max.val=this[i]
+            }
+        }
+        else{
+            count=1
+        }
+    }
+    return max.val+"出现了"+max.num+"次"
+}
