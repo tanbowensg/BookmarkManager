@@ -145,7 +145,7 @@ SmartBookmark.prototype.addDomain = function(domain, title) {
 
 /*--------------------------------更新书签模块的方法-----------------------------------------*/
 /**
- * [updateBookmarks 更新书签模块的主要方法]
+ * [updateBookmarks 更新书签模块的主要方法，暂时不用了]
  * @return {[null]}   [description]
  */
 SmartBookmark.prototype.updateBookmarks = function() {
@@ -161,6 +161,10 @@ SmartBookmark.prototype.updateBookmarks = function() {
     })
 }
 
+/**
+ * [updateBookmarks 更新书签模块的主要方法，是以data为基础的]
+ * @return {[null]}   [description]
+ */
 SmartBookmark.prototype.updateBookmarksByData = function() {
     var bm
     var that = this
@@ -189,24 +193,31 @@ SmartBookmark.prototype.updateBookmarksByData = function() {
 SmartBookmark.prototype.changeBookmarks = function(bm) {
     var destination 
     var count=0
+
+    // 先执行ignorelist
+    if(this.option.bmUpdateIgnore){
+        this.deleteIgnore(bm)
+    }
+
     for (var i=0;i<bm.length;i++) {
 
-        if (bm[i].id !== undefined &&bm[i].domain!==undefined&& (!this.option.bmUpdateIgnore || !bm[i].ignore)) { //TODO：把ignore判断弄到别的地方去
-            count++
+        if (bm[i].id !== undefined &&bm[i].domain!==undefined) { 
             destination={
                 index : count,
                 parentId: bm[i].parentId,
             }
             chrome.bookmarks.move(bm[i].id, destination)
+            count++
         }
         else if(bm[i].id===undefined){//自动添加新书签
-            count++
-            chrome.bookmarks.create({
+            destination={
                 index : count,
                 parentId:"1",
                 title:bm[i].title,
                 url:"http://"+bm[i].domain//这里必须加上http，否则会报错Invalid　URL
-            })
+            }
+            chrome.bookmarks.create(destination)
+            count++
         }
     }
 }
@@ -278,9 +289,14 @@ SmartBookmark.prototype.bmAddIgnore = function(bm) {
  * @return {[Array]}    [description]
  */
 //TODO:这个函数未完成
-SmartBookmark.prototype.bmDeleteIgnore = function(bm) {
+SmartBookmark.prototype.deleteIgnore = function(bm) {
     for (var i in this.option.ignoreList) {
-        this.deleteIgnore(this.option.ignoreList[i])
+        if(this.option.ignoreList.hasOwnProperty(i)){
+            var index=bm.getIndexByVal('domain',this.option.ignoreList[i])
+            if(index){
+                bm.splice(index,1)
+            }
+        }
     }
     return bm
 }

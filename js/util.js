@@ -56,6 +56,17 @@ Array.prototype.getObjHasKey=function(key){
     }
     return false
 }
+
+Array.prototype.getIndexByVal=function(key,val){
+    for (var i in this){
+        if(this[i].hasOwnProperty(key)){
+            if(this[i][key]===val){
+                return i
+            }
+        }
+    }
+    return false
+}
 /**
  * [getFrequency 在一个数组中获得出现频率最高的值]
  * @return {[type]} [description]
