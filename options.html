@@ -17,12 +17,14 @@
             <ul class="nav nav-tabs" id="tab-nav">
                 <li><a href="#update-option-section" data-toggle="tab">选项</a></li>
                 <li><a href="#ignore-list-section" data-toggle="tab">排除</a></li>
-                <li><a href="" data-toggle="tab">帮助</a></li>
+                <li><a href="#help-section" data-toggle="tab">帮助</a></li>
                 <li><a href="" data-toggle="tab"></a></li>
             </ul>
             <div class="tab-content">
                 <section class="tab-pane" id="ignore-list-section">
                     <h3>排除列表</h3>
+                    <p class="text-info">　　排除列表中的网站在优化书签的时候会被忽略，视为从来没有浏览过的网站，但是依旧会在浏览排名中显示。如果不想它出现在排名中，请点击排名中的“×”，以彻底删除这条记录。
+                    </p>
                     <input type="text" id="ignore-list-input" placeholder="例:www.baidu.com">
                     <button id="ignore-list-add">添加</button>
                     <ul id="ignore-list-ul">
@@ -39,6 +41,9 @@
                     <div class="update-option-div">
                         <h3>更新选项</h3>
                         <div class="update-option-indiv">
+                            <p class="text-danger">
+                            慎用！添加和删除的标签目前无法用备份恢复！自动添加的书签标题可能会很奇怪。
+                            </p>
                             <div>
                                 <input type="checkbox" id="auto-add-checkbox">
                                 <label for="auto-add-checkbox">点击数排名高于<input type="text" id="auto-add-input" class="num-input">，则自动添加该书签（如果该网站不在书签里的话）</label>
@@ -76,6 +81,15 @@
                             <button id="clear-all-button">清空所有记录</button>
                         </div>
                     </div>
+                </section>
+                <section class="tab-pane" id="help-section">
+                    <p class="text-primary">　　SmartBookmark v2.0</p>
+                    <p class="text-info">
+                    　　SmartBookmark可以实时您的浏览记录，也可以导入您的浏览历史记录。根据这些数据，SmartBookmark会自动优化您的书签栏。您还可以在选项中自定义优化策略，使之更符合您的浏览习惯。
+                    </p>
+                    <p class="text-muted">
+                    　　Bug or Suggestions? Please email tanbowensg@gmail.com.
+                    </p>
                 </section>
             </div>
         </div>

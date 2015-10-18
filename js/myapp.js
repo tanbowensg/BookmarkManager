@@ -212,7 +212,8 @@ SmartBookmark.prototype.changeBookmarks = function(bm) {
 
         if(myapp.option.autoAdd.enable===true){//自动添加新书签
             if(i<myapp.option.autoAdd.limit && bm[i].id === undefined){
-                myapp.createBookmark(count,'1',bm[i].title,bm[i].domain)
+                var title=titleList[bm[i].domain]||bm[i].domain
+                myapp.createBookmark(count,'1',title,bm[i].domain)
                 count++
                 continue
             }
@@ -368,7 +369,7 @@ SmartBookmark.prototype.saveBackup = function(callback) {
      * [restoreBackup 根据storage.bmBackup恢复书签]
      */
     //TODO:这个恢复备份不能恢复新增加的或者被删除的书签
-SmartBookmark.prototype.restoreBackup = function() {
+SmartBookmark.prototype.restoreBackup = function(callback) {
         var bm
         var that = this
         chrome.storage.local.get('bmBackup', function(result) {
@@ -376,6 +377,9 @@ SmartBookmark.prototype.restoreBackup = function() {
             bm = that.bmUrlToDomain(bm)
             bm = that.bmAddTimes(bm, that.data)
             that.changeBookmarks(bm)
+            if (callback) {
+                callback()
+            }
         })
     }
     /*----------------------------------end备份的方法end-----------------------------------------*/
@@ -456,7 +460,15 @@ SmartBookmark.prototype.init = function(callback) {
             that.option = {
                 bmUpdateIgnore: true,
                 ignoreList: [],
-                displayLimit: 20
+                displayLimit: 10,
+                autoAdd:{
+                    enable:false,
+                    limit:10
+                },
+                autoDelete:{
+                    enable:false,
+                    limit:10
+                }
             }
         }
         if (callback) {

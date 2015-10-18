@@ -29,7 +29,7 @@ function renderAll() {
             myapp.data.shellSortBy('times')
             var fragment = document.createDocumentFragment()
             for (var i = 0; i < myapp.data.length && i <= myapp.option.displayLimit - 1; i++) {
-                if (myapp.data.hasOwnProperty(i) && myapp.data[i].ignore !== true) {
+                if (myapp.data.hasOwnProperty(i)) {
                     var li = document.createElement("li")
                     var rank = document.createElement("span")
                     var url = document.createElement("span")

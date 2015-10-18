@@ -16,6 +16,13 @@ function makeIgnoreListRow(text) {
     li.append(remove).append(span).appendTo($('#ignore-list-ul'))
 }
 
+function showSuccess(text){
+    var html='<div class="alert alert-success fade" id="alert" role="alert">'+
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'
+          +text+'</div>'
+    $(html).insertBefore('#tab-nav').addClass('in')
+}
+
 settings.readHistory = function(day, callback) {
     chrome.history.search({
         text: '',
@@ -37,6 +44,7 @@ settings.updateByHistory = function(day) {
             myapp.updateData(settings.history[i].url,settings.history[i].title)
         }
         myapp.saveData('data')
+        showSuccess("导入成功！")
     })
 }
 
@@ -78,6 +86,7 @@ settings.renderAutoAddDelete = function() {
         }
 
         myapp.saveData("option")
+        showSuccess("保存成功！")
     })
 }
 
@@ -119,21 +128,26 @@ myapp.init(function() {
     $("#save-backup-button").click(function() {
         myapp.saveBackup(function() {
             $("#last-backup-time").text(myapp.bmBackup[1])
+            showSuccess("备份成功！")
         })
     })
 
     $("#restore-backup-button").click(function() {
-        myapp.restoreBackup()
+        myapp.restoreBackup(function(){
+            showSuccess("恢复成功！")
+        })
     })
 
     $("#display-limit-save").click(function() {
         var limit = $("#display-limit-input").val()
         settings.setDisplayLimit(limit)
+        showSuccess("设置成功！")
     });
 
     $("#display-limit-input").val(myapp.option.displayLimit)
 
     $("#clear-all-button").click(function() {
         myapp.clearData('data')
+        showSuccess("记录清空完毕！")
     });
 })
