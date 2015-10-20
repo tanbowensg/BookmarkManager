@@ -2,5 +2,57 @@
   "extName":{
     "message":"Smart",
     "description":"Very Smart"
-  }
+  },
+  "extDescription":{
+    "message":"Very Smart",
+    "description":"Very Smart"
+  },
+  "popup_header":{
+    "message":"SmartBookmark",
+    "description":"The header of popup"
+  },
+  "popup_rank":{
+    "message":"Rank",
+    "description":"First colomn title of the list"
+  },
+  "popup_web":{
+    "message":"Web",
+    "description":"Second colomn title of the list"
+  },
+  "popup_clicks":{
+    "message":"Clicks",
+    "description":"Third colomn title of the list"
+  },
+  "popup_button_optimize":{
+    "message":"Optimize Bookmarks",
+    "description":"Optimize Button"
+  },
+  "popup_button_options":{
+    "message":"Options",
+    "description":"Options button"
+  },
+  "options_nab_ignore":{
+    "message":"Ignore List",
+    "description":""
+  },
+  "options_nab__option":{
+    "message":"Options",
+    "description":"Options button"
+  },
+  "options_nab_help":{
+    "message":"Help",
+    "description":"Options button"
+  },
+  "options_header_":{
+    "message":"Options",
+    "description":"Options button"
+  },"options_header_":{
+    "message":"Options",
+    "description":"Options button"
+  },
+  "options_header_":{
+    "message":"Options",
+    "description":"Options button"
+  },
+  
 }
